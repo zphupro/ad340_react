@@ -2,57 +2,23 @@ import React, { Component } from 'react';
 import { FlatList, StyleSheet, Text, View, Image, Button } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
-/*
-<Text
-  onPress= { () => navigate("Cameras") }>Click
-</Text>
-*/
-
-class HomeScreen extends Component {
+class Camerachannel extends Component {
   static navigationOptions = {
-    title: 'Home',
-  };
-  render() {
-    const { navigate } = this.props.navigation;
-    return (
-      <View style={styles.container}>
-        <Text style={{fontSize: 20, color: 'black'}}>
-          Seattle Cameras App
-        </Text>
-        <Button
-          onPress= { () => navigate("Cameras") }
-          title="See Cameras"
-          color="#841584"
-          accessibilityLabel="Learn more about this purple button"
-          />
-      </View>
-    );
-  }
-}
-
-
-class CameraScreen extends Component {
-
-  static navigationOptions = {
-    title: 'Cameras',
-  };
-
-  state = {
+    title: 'This is live Cameras',
+  };state = {
     data: []
-  };
-
-  // called whenever component is mounted and can fetch data here
-  componentWillMount() {
+  };componentWillMount() {
     this.fetchData();
   }
 
-  //
+// get image from json
   fetchData = async () => {
     const response = await fetch('https://web6.seattle.gov/Travelers/api/Map/Data?zoomId=18&type=2');
     const json = await response.json();
     this.setState({ data: json.Features });
   };
 
+//process image return 
   cameraType(camera) {
       if(camera.Type == 'sdot'){
             return  "http://www.seattle.gov/trafficcams/images/"+camera.ImageUrl;
@@ -60,31 +26,26 @@ class CameraScreen extends Component {
             return "http://images.wsdot.wa.gov/nw/"+camera.ImageUrl;
       }
   }
-
-//source = {{ uri: 'http://www.seattle.gov/trafficcams/images/' + item.Cameras[0].ImageUrl }}
-
-  render() {
+ 
+  //proess image and style for layout of camera live 
+ render() {
     const { navigate } = this.props.navigation;
     return (
-
-      <View style={styles.container}>
-
-        <FlatList
-          data={this.state.data}
-          // x is the object and i is the index
-          keyExtractor={(x, i) => i.toString()}
-          renderItem={ ({item}) =>
-            //url = cameraType(item.Cameras[0]);
-            <View style={styles.textM}>
-             <Image
-                source = {{ uri: this.cameraType(item.Cameras[0]) }}
-                style = {{height: 250, margin: 3}}
+<View style={styles.container}>
+  <FlatList
+    data={this.state.data}
+    keyExtractor={(x, i) => i.toString()}
+    renderItem={ ({item}) =>
+    <View style={styles.textM}>
+    <Text style={{fontSize: 20, color: 'blue'}}>
+  {`${item.Cameras[0].Description}`}
+      </Text>
+      <Image
+            source = {{ uri: this.cameraType(item.Cameras[0]) }}
+            style = {{height: 250, margin: 3}}
                 />
 
-              <Text style={{fontSize: 20, color: 'black'}}>
-                {`${item.Cameras[0].Description}`}
-              </Text>
-            </View>
+          </View>
 
           }
          />
@@ -94,29 +55,39 @@ class CameraScreen extends Component {
   }
 
 }
-
-
-
+ // this is Homepage for camera
+ class HomeScreen extends Component {
+  static navigationOptions = {
+    title: 'Homepage',
+     };
+  render() {
+  const { navigate } = this.props.navigation;
+  return (
+  <View style={styles.container}>
+  <Text style={{fontSize: 24, color: 'black'}}>Welcome to Seattle live Camera </Text>
+  <Button
+    onPress= { () => navigate("Cameras") }
+    title="Live Seattle Camera"
+    color="#000000"
+          
+          />
+      
+      </View>
+    );
+  }
+}
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 0,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+  container: {marginTop: 0,flex: 1,justifyContent: 'center',alignItems: 'center',
+backgroundColor: '#FFEFD5',
   },
   textM: {
     marginBottom: 30
   },
-});
-
-export default class App extends Component {
+});export default class App extends Component {
   render () {
     return <NavigationApp />;
   }
-}
-
-const NavigationApp = StackNavigator({
+}const NavigationApp = StackNavigator({
     Home: { screen: HomeScreen },
-    Cameras: { screen: CameraScreen },
+    Cameras: { screen: Camerachannel },
 });
